@@ -23,7 +23,7 @@ public class TaskController {
     public ResponseEntity<TaskDtoResponse> addTask(@RequestParam String title,
                                                    @RequestParam LocalDateTime deadline,
                                                    @RequestParam String userID,
-                                                   @RequestParam String projectID){
+                                                   @RequestParam(required = false) String projectID){
         TaskDtoResponse taskDtoResponse = taskService.addTask(title, deadline, userID, projectID);
         return new ResponseEntity<>(taskDtoResponse, HttpStatus.CREATED);
     }

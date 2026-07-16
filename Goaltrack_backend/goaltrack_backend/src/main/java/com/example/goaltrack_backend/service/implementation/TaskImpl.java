@@ -31,12 +31,14 @@ public class TaskImpl implements TaskService {
     public TaskDtoResponse addTask(String title,
                                    LocalDateTime deadline, String userID, String projectID) {
 
+        String finalProject = (projectID != null && projectID.isEmpty()) ? null : projectID;
+
         TaskModel taskModel = TaskModel.builder()
                 .title(title)
                 .userID(userID)
                 .status("IN PROGRESS")
                 .deadline(deadline)
-                .projectID(projectID)
+                .projectID(finalProject)
                 .build();
 
         taskRepository.save(taskModel);

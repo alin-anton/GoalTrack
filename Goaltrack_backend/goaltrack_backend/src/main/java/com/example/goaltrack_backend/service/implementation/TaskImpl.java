@@ -1,6 +1,7 @@
 package com.example.goaltrack_backend.service.implementation;
 
 import com.example.goaltrack_backend.dto.TaskDtoResponse;
+import com.example.goaltrack_backend.dto.update.TaskUpdateDto;
 import com.example.goaltrack_backend.mapper.ProjectMapper;
 import com.example.goaltrack_backend.mapper.TaskMapper;
 import com.example.goaltrack_backend.mapper.UserMapper;
@@ -10,7 +11,6 @@ import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
 import com.example.goaltrack_backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -92,14 +92,11 @@ public class TaskImpl implements TaskService {
     }
 
     @Override
-    public TaskDtoResponse updateTask(String id,String title, LocalDateTime deadline){
+    public TaskDtoResponse updateTask(String id,TaskUpdateDto dto){
+
         TaskModel model = taskRepository.findById(id).get();
-        if(title != null){
-            model.setTitle(title);
-        }
-        if(deadline != null){
-            model.setDeadline(deadline);
-        }
+        model.setDeadline(dto.getDeadline());
+        model.setTitle(dto.getTitle());
 
         taskRepository.save(model);
 

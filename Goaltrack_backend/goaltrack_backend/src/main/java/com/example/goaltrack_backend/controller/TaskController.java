@@ -1,9 +1,9 @@
 package com.example.goaltrack_backend.controller;
 
 import com.example.goaltrack_backend.dto.TaskDtoResponse;
+import com.example.goaltrack_backend.dto.update.TaskUpdateDto;
 import com.example.goaltrack_backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,11 +52,9 @@ public class TaskController {
 
     @PutMapping("/{idTask}")
     public ResponseEntity<TaskDtoResponse> updateTask(@PathVariable String idTask,
-                                                      @RequestParam String title,
-                                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                                                          LocalDateTime deadline){
+                                                      @RequestBody TaskUpdateDto dto){
 
-        return ResponseEntity.ok(taskService.updateTask(idTask, title, deadline));
+        return ResponseEntity.ok(taskService.updateTask(idTask, dto));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.goaltrack_backend.service;
 
 import com.example.goaltrack_backend.dto.ProjectDtoResponse;
+import com.example.goaltrack_backend.dto.update.ProjectUpdateDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,6 @@ public interface ProjectService {
 
     void deleteProject(String id);
 
-    ProjectDtoResponse updateProject(String id,String title,String description, LocalDateTime deadline);
+    ProjectDtoResponse updateProject(String id, ProjectUpdateDto dto);
 
 }

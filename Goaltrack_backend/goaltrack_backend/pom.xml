@@ -94,18 +94,22 @@
             <version>1.5.5.Final</version>
         </dependency>
 
-        <!-- JWT API și Implementare (Pentru Securitate/Login) -->
+        <!-- Interfața de bază pentru JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
         </dependency>
+
+        <!-- Implementarea logicii pentru JWT (rulată în fundal) -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Adaptorul pentru Jackson (Serializare/Deserializare JSON folosită nativ de Spring Boot) -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>

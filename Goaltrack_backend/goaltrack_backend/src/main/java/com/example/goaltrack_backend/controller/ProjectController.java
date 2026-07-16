@@ -1,6 +1,7 @@
 package com.example.goaltrack_backend.controller;
 
 import com.example.goaltrack_backend.dto.ProjectDtoResponse;
+import com.example.goaltrack_backend.dto.update.ProjectUpdateDto;
 import com.example.goaltrack_backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -48,11 +49,9 @@ public class ProjectController {
 
     @PutMapping("/{idProiect}")
     public ResponseEntity<ProjectDtoResponse> updateProiect(@PathVariable String idProiect,
-                                                            @RequestParam String title,
-                                                            @RequestParam String description,
-                                                            @RequestParam LocalDateTime deadline){
+                                                            @RequestBody ProjectUpdateDto dto){
 
-        return ResponseEntity.ok(projectService.updateProject(idProiect, title, description, deadline));
+        return ResponseEntity.ok(projectService.updateProject(idProiect, dto));
     }
 
 }

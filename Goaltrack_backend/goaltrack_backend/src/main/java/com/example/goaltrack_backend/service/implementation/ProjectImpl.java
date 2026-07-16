@@ -1,6 +1,7 @@
 package com.example.goaltrack_backend.service.implementation;
 
 import com.example.goaltrack_backend.dto.ProjectDtoResponse;
+import com.example.goaltrack_backend.dto.update.ProjectUpdateDto;
 import com.example.goaltrack_backend.mapper.ProjectMapper;
 import com.example.goaltrack_backend.mapper.TaskMapper;
 import com.example.goaltrack_backend.mapper.UserMapper;
@@ -63,17 +64,12 @@ public class ProjectImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDtoResponse updateProject(String id,String title,String description, LocalDateTime deadline){
+    public ProjectDtoResponse updateProject(String id, ProjectUpdateDto dto){
         ProjectModel model = projectRepository.findById(id).get();
-        if(title != null){
-            model.setTitle(title);
-        }
-        if(description != null){
-            model.setDescription(description);
-        }
-        if(deadline != null){
-            model.setDeadline(deadline);
-        }
+
+        model.setDeadline(dto.getDeadline());
+        model.setTitle(dto.getTitle());
+        model.setDescription(dto.getDescription());
 
         projectRepository.save(model);
         return projectMapper.toDto(model);

@@ -1,7 +1,7 @@
 package com.example.goaltrack_backend.service;
 
 import com.example.goaltrack_backend.dto.TaskDtoResponse;
-import org.springframework.data.annotation.CreatedDate;
+import com.example.goaltrack_backend.dto.update.TaskUpdateDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ public interface TaskService {
 
     void deleteTask(String id);
 
-    TaskDtoResponse updateTask(String id,String title, LocalDateTime deadline);
+    TaskDtoResponse updateTask(String id,TaskUpdateDto taskUpdateDto);
 
 
 }

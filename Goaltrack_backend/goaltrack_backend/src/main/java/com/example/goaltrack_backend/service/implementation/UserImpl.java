@@ -14,6 +14,7 @@ import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
 import com.example.goaltrack_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +24,7 @@ import java.util.List;
 public class UserImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final TaskRepository taskRepository;
-    private final TaskMapper taskMapper;
-    private final ProjectMapper projectMapper;
-    private final ProjectRepository projectRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDtoResponse getUserById(String idUser){
@@ -40,7 +38,7 @@ public class UserImpl implements UserService {
         UserModel userModel = UserModel.builder()
                 .email(email)
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .build();
 
         userRepository.save(userModel);

@@ -12,4 +12,9 @@ import java.util.List;
 public interface TaskRepository extends MongoRepository<TaskModel, String> {
 
     List<TaskModel> findByDeadlineBeforeAndStatusNot(LocalDateTime deadline, String status);
+
+    List<TaskModel> getTaskModelsByUserID(String idUser);
+
+    List<TaskModel> getTaskModelsByProjectID(String project);
+
 }

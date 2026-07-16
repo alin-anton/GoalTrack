@@ -10,6 +10,7 @@ import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
 import com.example.goaltrack_backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +31,15 @@ public class TaskImpl implements TaskService {
     public TaskDtoResponse addTask(String title,
                                    LocalDateTime deadline, String userID, String projectID) {
 
-        TaskModel taskModel = null;
-        taskModel.setTitle(title);
-        taskModel.setStatus("IN PROGRESS");
-        taskModel.setDeadline(deadline);
-        taskModel.setUserID(userID);
-        if(projectID != null){
-            taskModel.setProjectID(projectID);
-        }
+        TaskModel taskModel = TaskModel.builder()
+                .title(title)
+                .userID(userID)
+                .status("IN PROGRESS")
+                .deadline(deadline)
+                .projectID(projectID)
+                .build();
+
+        taskRepository.save(taskModel);
 
         return taskMapper.toDto(taskModel);
     }
@@ -51,7 +53,9 @@ public class TaskImpl implements TaskService {
 
     @Override
     @Scheduled(cron = "0 0 * * * *")
-    public void dueTasks(LocalDateTime deadline){
+    public void dueTasks(){
+        LocalDateTime deadline = LocalDateTime.now();
+
         List<TaskModel> models = taskRepository.findByDeadlineBeforeAndStatusNot(deadline, "COMPLETED");
 
         if(models.isEmpty()){
@@ -66,5 +70,41 @@ public class TaskImpl implements TaskService {
     }
 
 
-    
+    @Override
+    public List<TaskDtoResponse> getTasksForProject(String project){
+        List<TaskModel> models = taskRepository.getTaskModelsByProjectID(project);
+        return taskMapper.toDtoList(models);
+    }
+
+    @Override
+    public List<TaskDtoResponse> getTasksForUser(String idUser){
+        List<TaskModel> models = taskRepository.getTaskModelsByUserID(idUser);
+        return taskMapper.toDtoList(models);
+    }
+
+    @Override
+    public void deleteTask(String id){
+        if(!taskRepository.existsById(id)){
+            return;
+        }
+
+        taskRepository.deleteById(id);
+    }
+
+    @Override
+    public TaskDtoResponse updateTask(String id,String title, LocalDateTime deadline){
+        TaskModel model = taskRepository.findById(id).get();
+        if(title != null){
+            model.setTitle(title);
+        }
+        if(deadline != null){
+            model.setDeadline(deadline);
+        }
+
+        taskRepository.save(model);
+
+        return taskMapper.toDto(model);
+    }
+
+
 }

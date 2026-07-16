@@ -13,4 +13,5 @@ public interface ProjectMapper {
     ProjectDtoResponse toDto(ProjectModel projectModel);
 
     List<ProjectDtoResponse> toDtoList(List<ProjectModel> projectModels);
+
 }

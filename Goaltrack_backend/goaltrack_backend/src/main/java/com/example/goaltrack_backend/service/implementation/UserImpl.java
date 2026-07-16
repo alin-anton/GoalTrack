@@ -13,7 +13,6 @@ import com.example.goaltrack_backend.repository.ProjectRepository;
 import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
 import com.example.goaltrack_backend.service.UserService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Builder
 public class UserImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -36,24 +34,15 @@ public class UserImpl implements UserService {
         return userMapper.toDto(userModel);
     }
 
-    @Override
-    public List<TaskDtoResponse> getTasksForUser(String idUser){
-        List<TaskModel> models = taskRepository.getTaskModelsByUserID(idUser);
-        return taskMapper.toDtoList(models);
-    }
-
-    @Override
-    public List<ProjectDtoResponse> getProjectsForUser(String idUser){
-        List<ProjectModel> models = projectRepository.getProjectModelsByUserID(idUser);
-        return projectMapper.toDtoList(models);
-    }
 
     @Override
     public UserDtoResponse createUser( String username, String email, String password){
-        UserModel userModel = null;
-        userModel.setEmail(email);
-        userModel.setUsername(username);
-        userModel.setPassword(password);
+        UserModel userModel = UserModel.builder()
+                .email(email)
+                .username(username)
+                .password(password)
+                .build();
+
         userRepository.save(userModel);
 
         return userMapper.toDto(userModel);
@@ -67,6 +56,22 @@ public class UserImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public UserDtoResponse getUserByEmail(String email){
+        UserModel model = userRepository.getUserModelByEmail(email);
+        return userMapper.toDto(model);
+    }
 
+
+    @Override
+    public UserDtoResponse updatePassword(String idUser, String oldPassword, String newPassword){
+        UserModel model = userRepository.getUserModelById(idUser);
+        if(oldPassword == model.getPassword()){
+            model.setPassword(newPassword);
+        }
+
+        userRepository.save(model);
+        return userMapper.toDto(model);
+    }
 
 }

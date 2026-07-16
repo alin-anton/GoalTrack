@@ -6,9 +6,11 @@ import com.example.goaltrack_backend.mapper.ProjectMapper;
 import com.example.goaltrack_backend.mapper.TaskMapper;
 import com.example.goaltrack_backend.mapper.UserMapper;
 import com.example.goaltrack_backend.model.TaskModel;
+import com.example.goaltrack_backend.model.UserModel;
 import com.example.goaltrack_backend.repository.ProjectRepository;
 import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
+import com.example.goaltrack_backend.service.ProjectService;
 import com.example.goaltrack_backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,12 +22,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TaskImpl implements TaskService {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private final ProjectMapper projectMapper;
-    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final ProjectService projectService;
 
     @Override
     public TaskDtoResponse addTask(String title,
@@ -43,6 +44,11 @@ public class TaskImpl implements TaskService {
 
         taskRepository.save(taskModel);
 
+        UserModel user = userRepository.findById(taskModel.getUserID()).get();
+        Long comp = user.getTotalTasks() + 1L;
+        user.setTotalTasks(comp);
+        userRepository.save(user);
+
         return taskMapper.toDto(taskModel);
     }
 
@@ -51,6 +57,13 @@ public class TaskImpl implements TaskService {
         TaskModel taskModel = taskRepository.findById(idTask).get();
         taskModel.setStatus("COMPLETED");
         taskRepository.save(taskModel);
+        projectService.completeProject(taskModel.getProjectID());
+
+        UserModel user = userRepository.findById(taskModel.getUserID()).get();
+        Long comp = user.getFinishedTasks() + 1L;
+        user.setFinishedTasks(comp);
+        userRepository.save(user);
+
     }
 
     @Override
@@ -66,6 +79,10 @@ public class TaskImpl implements TaskService {
 
         for(TaskModel task : models){
             task.setStatus("DUE");
+            UserModel user = userRepository.findById(task.getUserID()).get();
+            Long comp = user.getDueTasks() + 1L;
+            user.setDueProjects(comp);
+            userRepository.save(user);
         }
 
         taskRepository.saveAll(models);

@@ -13,4 +13,16 @@ public class UserDtoResponse {
 
     private String email;
 
+    private Long totalTasks;
+
+    private Long finishedTasks;
+
+    private Long dueTasks;
+
+    private Long totalProjects;
+
+    private Long finishedProjects;
+
+    private Long dueProjects;
+
 }

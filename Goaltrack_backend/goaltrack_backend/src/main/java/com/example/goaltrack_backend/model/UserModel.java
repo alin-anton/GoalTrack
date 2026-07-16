@@ -22,4 +22,16 @@ public class UserModel {
     private String email;
 
     private String password;
+
+    private Long totalTasks;
+
+    private Long finishedTasks;
+
+    private Long dueTasks;
+
+    private Long totalProjects;
+
+    private Long finishedProjects;
+
+    private Long dueProjects;
 }

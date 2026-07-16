@@ -4,6 +4,8 @@ import com.example.goaltrack_backend.dto.ProjectDtoResponse;
 import com.example.goaltrack_backend.dto.TaskDtoResponse;
 import com.example.goaltrack_backend.dto.UserDtoResponse;
 
+import java.util.List;
+
 
 public interface UserService {
 
@@ -16,4 +18,6 @@ public interface UserService {
     UserDtoResponse getUserByEmail(String email);
 
     UserDtoResponse updatePassword(String idUser, String oldPassword, String newPassword);
+
+    List<List<Double>> getPercentegesForUser(String idUser);
 }

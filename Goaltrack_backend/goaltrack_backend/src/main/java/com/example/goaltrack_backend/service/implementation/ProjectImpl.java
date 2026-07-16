@@ -6,12 +6,15 @@ import com.example.goaltrack_backend.mapper.ProjectMapper;
 import com.example.goaltrack_backend.mapper.TaskMapper;
 import com.example.goaltrack_backend.mapper.UserMapper;
 import com.example.goaltrack_backend.model.ProjectModel;
+import com.example.goaltrack_backend.model.TaskModel;
+import com.example.goaltrack_backend.model.UserModel;
 import com.example.goaltrack_backend.repository.ProjectRepository;
 import com.example.goaltrack_backend.repository.TaskRepository;
 import com.example.goaltrack_backend.repository.UserRepository;
 import com.example.goaltrack_backend.service.ProjectService;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ public class ProjectImpl implements ProjectService {
     private final ProjectRepository projectRepository;
 
 
+
     @Override
     public ProjectDtoResponse addProject(String title, String description,
                                   LocalDateTime deadline, String userID){
@@ -36,10 +40,15 @@ public class ProjectImpl implements ProjectService {
                 .userID(userID)
                 .deadline(deadline)
                 .title(title)
+                .status("IN PROGRESS")
                 .description(description).build();
 
         projectRepository.save(projectModel);
 
+        UserModel user = userRepository.findById(projectModel.getUserID()).get();
+        Long count = user.getTotalProjects() + 1L;
+        user.setTotalProjects(count);
+        userRepository.save(user);
         return projectMapper.toDto(projectModel);
     }
 
@@ -73,6 +82,40 @@ public class ProjectImpl implements ProjectService {
 
         projectRepository.save(model);
         return projectMapper.toDto(model);
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 * * * *")
+    public void dueProjects(){
+        LocalDateTime deadline = LocalDateTime.now();
+
+        List<ProjectModel> models = projectRepository.findProjectModelsByDeadlineBefore(deadline);
+
+        for(ProjectModel proj : models){
+            proj.setStatus("DUE");
+            UserModel user = userRepository.findById(proj.getUserID()).get();
+            Long comp = user.getDueProjects() + 1L;
+            user.setDueProjects(comp);
+            userRepository.save(user);
+        }
+
+        projectRepository.saveAll(models);
+    }
+
+    @Override
+    public void completeProject(String idProject){
+
+        ProjectModel projectModel = projectRepository.findById(idProject).get();
+        if(taskRepository.countByProjectIDAndStatusNot(idProject,"COMPLETED") == 0){
+            projectModel.setStatus("COMPLETED");
+        }
+        projectRepository.save(projectModel);
+
+        UserModel user = userRepository.findById(projectModel.getUserID()).get();
+        Long comp = user.getFinishedProjects() + 1L;
+        user.setFinishedProjects(comp);
+        userRepository.save(user);
+
     }
 
 }

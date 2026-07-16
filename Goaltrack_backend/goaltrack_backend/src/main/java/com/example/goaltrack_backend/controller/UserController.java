@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -47,6 +49,11 @@ public class UserController {
                                                           @RequestParam String news){
 
         return ResponseEntity.ok(userService.updatePassword(idUser, old, news));
+    }
+
+    @GetMapping("/{idUser}/stats")
+    public List<List<Double>> getStatsForUser(@PathVariable String idUser){
+        return userService.getPercentegesForUser(idUser);
     }
 
 }

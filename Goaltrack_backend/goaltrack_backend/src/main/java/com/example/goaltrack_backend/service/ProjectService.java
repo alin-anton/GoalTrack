@@ -19,4 +19,8 @@ public interface ProjectService {
 
     ProjectDtoResponse updateProject(String id, ProjectUpdateDto dto);
 
+    void dueProjects();
+
+    void completeProject(String idProject);
+
 }

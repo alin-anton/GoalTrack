@@ -25,6 +25,8 @@ public class ProjectModel {
 
     private String description;
 
+    private String status;
+
     @CreatedDate
     private LocalDateTime creationDate;
 

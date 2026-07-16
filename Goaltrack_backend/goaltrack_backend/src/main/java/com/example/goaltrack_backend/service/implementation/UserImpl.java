@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +40,8 @@ public class UserImpl implements UserService {
                 .email(email)
                 .username(username)
                 .password(passwordEncoder.encode(password))
+                .totalTasks(0L).finishedTasks(0L).dueTasks(0L)
+                .totalProjects(0L).finishedProjects(0L).dueProjects(0L)
                 .build();
 
         userRepository.save(userModel);
@@ -70,6 +73,30 @@ public class UserImpl implements UserService {
 
         userRepository.save(model);
         return userMapper.toDto(model);
+    }
+
+    @Override
+    public List<List<Double>> getPercentegesForUser(String idUser){
+        List<List<Double>> finishedDue = new ArrayList<>();
+
+        UserModel user = userRepository.findById(idUser).get();
+
+        Double finishedTaskPercent = (double)user.getFinishedTasks() /(double)user.getTotalTasks();
+        Double dueTaskPercent = (double)user.getDueTasks() /(double) user.getTotalTasks();
+        Double finishedProjPercent = (double)user.getFinishedProjects() /(double) user.getTotalProjects();
+        Double dueProjPercent = (double)user.getDueProjects() / (double) user.getTotalProjects();
+
+        List<Double> tasks = new ArrayList<>();
+        tasks.add(finishedTaskPercent);
+        tasks.add(dueTaskPercent);
+        finishedDue.add(tasks);
+
+        List<Double> proj  = new ArrayList<>();
+        proj.add(finishedProjPercent);
+        proj.add(dueProjPercent);
+        finishedDue.add(proj);
+
+        return finishedDue;
     }
 
 }

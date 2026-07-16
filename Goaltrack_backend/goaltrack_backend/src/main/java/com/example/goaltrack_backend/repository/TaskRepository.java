@@ -17,4 +17,6 @@ public interface TaskRepository extends MongoRepository<TaskModel, String> {
 
     List<TaskModel> getTaskModelsByProjectID(String project);
 
+    long countByProjectIDAndStatusNot(String idProiect,String status);
+
 }

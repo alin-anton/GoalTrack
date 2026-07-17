@@ -17,6 +17,8 @@ public class ProjectDtoResponse {
 
     private String description;
 
+    private String status;
+    
     private LocalDateTime creationDate;
 
     private LocalDateTime deadline;

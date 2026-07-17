@@ -1,7 +1,7 @@
 
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import {Home,Stats} from './pages/Home';
 
 function App() {
 
@@ -10,7 +10,7 @@ function App() {
         <div className="min-h-screen">
             <Routes>
                 <Route path="/" element={<Home />} />
-                  
+                <Route path="/stats" element={<Stats />} />
             </Routes>
         </div>
     </BrowserRouter>

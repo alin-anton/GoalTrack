@@ -22,5 +22,5 @@ public interface TaskService {
 
     TaskDtoResponse updateTask(String id,TaskUpdateDto taskUpdateDto);
 
-
+    TaskDtoResponse getTaskById(String id);
 }

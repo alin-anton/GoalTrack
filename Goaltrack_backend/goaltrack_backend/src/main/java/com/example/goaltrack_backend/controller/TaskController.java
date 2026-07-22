@@ -57,4 +57,9 @@ public class TaskController {
         return ResponseEntity.ok(taskService.updateTask(idTask, dto));
     }
 
+    @GetMapping("/{idTask}")
+    public ResponseEntity<TaskDtoResponse> getTaskById(@PathVariable String idTask){
+        return ResponseEntity.ok(taskService.getTaskById(idTask));
+    }
+
 }

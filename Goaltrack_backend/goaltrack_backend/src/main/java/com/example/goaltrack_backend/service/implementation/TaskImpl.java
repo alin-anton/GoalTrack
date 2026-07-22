@@ -122,5 +122,9 @@ public class TaskImpl implements TaskService {
         return taskMapper.toDto(model);
     }
 
-
+    @Override
+    public TaskDtoResponse getTaskById(String id){
+        TaskModel model = taskRepository.findById(id).get();
+        return taskMapper.toDto(model);
+    }
 }

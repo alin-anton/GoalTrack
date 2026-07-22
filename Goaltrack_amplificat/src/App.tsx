@@ -1,77 +1,65 @@
 import React from 'react';
-import { ProjectCard } from './components/ProjectCard';
-import type { Project } from './types/Project';
+import TaskCard from './components/TaskCard';
+import type { Task } from './types/Task'; 
 
 const App: React.FC = () => {
-  // 1. Creăm niște date de test (mock data)
-  const proiectDeTest1 = {
-    id: 'proj-001',
-    name: 'GoalTrack Frontend',
-    title: 'Dezvoltare GoalTrack',
-    description: 'Implementarea arhitecturii de frontend cu React, Tailwind CSS și TypeScript pentru o performanță optimă.',
-    status: 'IN PROGRESS',
-    creationTime: '2026-01-15T09:00:00',
-    deadline: '2026-08-20T15:00:00',
-    progressPercentage: 65,
-    tasks: [
-      {
-        id: 'task-001',
-        title: 'Design UI și componente',
-        status: 'IN PROGRESS',
-        creationDate: '2026-01-16T10:00:00',
-        deadline: '2026-03-01T18:00:00',
-      },
-      {
-        id: 'task-002',
-        title: 'Integrare API proiecte',
-        status: 'PENDING',
-        creationDate: '2026-02-01T09:00:00',
-        deadline: '2026-04-15T17:00:00',
-      },
-    ],
+  // Date de test (Mock Data)
+  const mockTasks: Task[] = [
+    {
+      id: 'task-1',
+      title: 'Configurare bază de date MySQL și MongoDB pentru GoalTrack',
+      status: 'COMPLETED',
+      deadline: '2026-07-15T12:00:00',
+      creationDate: '2026-07-01T09:00:00',
+    },
+    {
+      id: 'task-2',
+      title: 'Integrare API de autentificare cu token JWT în frontend',
+      status: 'IN PROGRESS',
+      deadline: '2026-07-25T16:30:00',
+      creationDate: '2026-07-05T10:15:00',
+    },
+    {
+      id: 'task-3',
+      title: 'Design responsiv pentru pagina de detalii a proiectului folosind Tailwind CSS',
+      status: 'PENDING',
+      deadline: '2026-07-30T10:00:00',
+      creationDate: '2026-07-10T14:45:00',
+    }
+  ];
+
+  // Funcții de test pentru butoane
+  const handleCompleteTask = (id: string) => {
+    alert(`Ai dat click pe Finalizează pentru task-ul: ${id}`);
   };
 
-  const proiectDeTest2 = {
-    id: 'proj-002',
-    name: 'Autentificare JWT',
-    title: 'Sistem de Autentificare',
-    description: 'Securizarea aplicației folosind JWT.',
-    status: 'COMPLETED',
-    creationTime: '2026-03-02T11:30:00',
-    deadline: '2026-07-10T10:00:00',
-    progressPercentage: 100,
-    tasks: [
-      {
-        id: 'task-011',
-        title: 'Configurare backend JWT',
-        status: 'COMPLETED',
-        creationDate: '2026-03-03T11:00:00',
-        deadline: '2026-03-15T16:00:00',
-      },
-      {
-        id: 'task-012',
-        title: 'Testare flux de autentificare',
-        status: 'COMPLETED',
-        creationDate: '2026-03-10T14:00:00',
-        deadline: '2026-04-05T14:00:00',
-      },
-    ],
-  };
-
-  // 2. O funcție simplă pentru testarea butonului
-  const handleViewDetails = (id: string) => {
-    alert(`Ai dat click pe proiectul cu ID-ul: ${id}`);
+  const handleDeleteTask = (id: string) => {
+    if(window.confirm('Sigur vrei să ștergi acest task?')) {
+      alert(`Task-ul ${id} ar fi fost șters.`);
+    }
   };
 
   return (
-    // Un fundal gri deschis ca să iasă în evidență cardurile albe
-    <div className="min-h-screen bg-gray-100 p-10">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Proiectele mele</h1>
+    // Un fundal simplu pe tot ecranul, cu padding (p-8)
+    <div className="min-h-screen bg-gray-50 p-8 font-sans">
       
-      {/* Folosim un grid CSS pentru a le așeza frumos pe coloane */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <ProjectCard project={proiectDeTest1} onViewDetails={handleViewDetails} />
-        <ProjectCard project={proiectDeTest2} onViewDetails={handleViewDetails} />
+      {/* Container care centrează conținutul pe ecranele foarte mari */}
+      <div className="max-w-7xl mx-auto">
+        
+        
+
+        {/* Grila responsivă: 1 coloană pe mobil, până la 4 pe desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {mockTasks.map((task) => (
+            <TaskCard 
+              key={task.id} 
+              task={task} 
+              onCompleteTask={handleCompleteTask} 
+              onDelete={handleDeleteTask} 
+            />
+          ))}
+        </div>
+
       </div>
     </div>
   );

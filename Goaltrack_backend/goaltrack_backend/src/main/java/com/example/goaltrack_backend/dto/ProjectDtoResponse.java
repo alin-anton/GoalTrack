@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ProjectDtoResponse {
 
+    private String id;
+
     private String title;
 
     private String description;

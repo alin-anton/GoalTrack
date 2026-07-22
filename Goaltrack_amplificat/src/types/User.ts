@@ -1,13 +1,13 @@
 
 
 export interface User {
-
+    id: string;
     username: string;
     email: string;
-    totalTasks: long;
-    finishedTasks: long;
-    dueTasks: long;
-    totalProjects: long;
-    finishedProjects: long;
-    dueProjects: long;
+    totalTasks: number;
+    finishedTasks: number;
+    dueTasks: number;
+    totalProjects: number;
+    finishedProjects: number;
+    dueProjects: number;
 }

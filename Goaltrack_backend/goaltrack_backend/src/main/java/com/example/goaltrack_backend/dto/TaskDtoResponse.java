@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TaskDtoResponse {
 
+    private String id;
+
     private String title;
 
     private String status;

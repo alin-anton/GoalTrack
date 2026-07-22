@@ -1,15 +1,15 @@
 import api from './api';
-import type { Task } from '../types/Task';
+import type { User } from '../types/User';
 
 export const UserService = {
     
-    getById: async (userId: string): Promise<Task[]> => {
-        const response = await api.get<Task[]>(`/users/${userId}/tasks`);
+    getById: async (userId: string): Promise<User> => {
+        const response = await api.get<User>(`/users/${userId}`);
         return response.data;
     },
 
-    getByEmail: async (email: string): Promise<Task[]> => {
-        const response = await api.get<Task[]>(`/users/email/${email}/tasks`);
+    getByEmail: async (email: string): Promise<User> => {
+        const response = await api.get<User>(`/users/email/${email}`);
         return response.data;
     },
 

@@ -6,4 +6,6 @@ export interface Task{
     status: string;
     creationDate: string;
     deadline: string;
+    projectId?: string; // Optional, pentru a lega task-ul de un proiect
+    userId: string;
 }

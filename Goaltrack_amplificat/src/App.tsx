@@ -1,9 +1,23 @@
 import React from 'react';
 import TaskCard from './components/TaskCard';
+import ProjectCard from './components/ProjectCard';
 import type { Task } from './types/Task'; 
+import type { Project } from './types/Project';
+import Navbar from './components/Navbar';
 
 const App: React.FC = () => {
-  // Date de test (Mock Data)
+  const mockProjects: Project[] = [
+    {
+      id: 'proj-1',
+      name: 'GoalTrack',
+      title: 'Dezvoltare Platformă GoalTrack',
+      description: 'Aplicație completă pentru managementul task-urilor',
+      creationDate: '2026-06-15T08:00:00',
+      deadline: '2026-08-01T23:59:59',
+      status: 'IN PROGRESS'
+    }
+  ];
+
   const mockTasks: Task[] = [
     {
       id: 'task-1',
@@ -11,6 +25,8 @@ const App: React.FC = () => {
       status: 'COMPLETED',
       deadline: '2026-07-15T12:00:00',
       creationDate: '2026-07-01T09:00:00',
+      projectId: 'proj-1', 
+      userId: 'user-1'
     },
     {
       id: 'task-2',
@@ -18,6 +34,8 @@ const App: React.FC = () => {
       status: 'IN PROGRESS',
       deadline: '2026-07-25T16:30:00',
       creationDate: '2026-07-05T10:15:00',
+      projectId: 'proj-1', 
+      userId: 'user-1'
     },
     {
       id: 'task-3',
@@ -25,10 +43,10 @@ const App: React.FC = () => {
       status: 'PENDING',
       deadline: '2026-07-30T10:00:00',
       creationDate: '2026-07-10T14:45:00',
+      userId: 'user-1',
     }
   ];
 
-  // Funcții de test pentru butoane
   const handleCompleteTask = (id: string) => {
     alert(`Ai dat click pe Finalizează pentru task-ul: ${id}`);
   };
@@ -39,28 +57,60 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDeleteProject = (id: string) => {
+    if(window.confirm('Sigur vrei să ștergi acest proiect și toate task-urile din el?')) {
+      alert(`Proiectul ${id} ar fi fost șters.`);
+    }
+  };
+
+  const standaloneTasks = mockTasks.filter(task => !task.projectId);
+
   return (
-    // Un fundal simplu pe tot ecranul, cu padding (p-8)
-    <div className="min-h-screen bg-gray-50 p-8 font-sans">
+    <div className="flex h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 font-sans overflow-hidden">
       
-      {/* Container care centrează conținutul pe ecranele foarte mari */}
-      <div className="max-w-7xl mx-auto">
-        
-        
+      <Navbar 
+        onNavigate={(path) => console.log('Navigat catre', path)} 
+        onLogout={() => console.log('Iesire')} 
+      />
+   
+      <main className="flex-1 p-8 h-screen overflow-y-auto">
+        <div className="max-w-5xl mx-auto pb-20">
+          
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-300">
+              Task-urile Mele
+            </h1>
+          </header>
 
-        {/* Grila responsivă: 1 coloană pe mobil, până la 4 pe desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockTasks.map((task) => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              onCompleteTask={handleCompleteTask} 
-              onDelete={handleDeleteTask} 
-            />
-          ))}
+          <div className="flex flex-col gap-6">
+            {mockProjects.map((project) => {
+              const tasksForThisProject = mockTasks.filter(t => t.projectId === project.id);
+              
+              return (
+                <ProjectCard 
+                  key={project.id}
+                  project={project}
+                  projectTasks={tasksForThisProject}
+                  onDeleteProject={handleDeleteProject}
+                  onCompleteTask={handleCompleteTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              );
+            })}
+
+            {standaloneTasks.map((task) => (
+              <TaskCard 
+                key={task.id} 
+                task={task} 
+                userId={task.userId}
+                onComplete={handleCompleteTask} 
+                onDelete={handleDeleteTask} 
+              />
+            ))}
+          </div>
         </div>
+      </main>
 
-      </div>
     </div>
   );
 };

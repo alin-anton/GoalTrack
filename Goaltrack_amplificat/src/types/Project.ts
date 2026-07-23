@@ -5,7 +5,7 @@ export interface Project {
     name: string;
     title: string;
     description: string;
-    creationTime: string;
+    creationDate: string;
     deadline: string;
     status: string;
 }

@@ -1,66 +1,92 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import ContainerContent from '../components/ContainerContent';
 import type { Task } from '../types/Task'; 
 import type { Project } from '../types/Project';
+import { ProjectService } from '../services/ProjectService'; // Asigură-te că folderul se numește 'services'
+import { TaskService } from '../services/TaskService';
 
 const Home: React.FC = () => {
-  // Date de test (Mock Data)
-  const mockProjects: Project[] = [
-    {
-      id: 'proj-1',
-      name: 'GoalTrack',
-      title: 'Dezvoltare Platformă GoalTrack',
-      description: 'Aplicație completă pentru managementul task-urilor, incluzând panouri de control, modalități de adăugare rapide și o structură clară pentru organizarea activității zilnice. Acest proiect folosește React, Tailwind CSS și o bază de date non-relațională.',
-      creationDate: '2026-06-15T08:00:00',
-      deadline: '2026-08-01T23:59:59',
-      status: 'IN PROGRESS'
-    }
-  ];
+  // Stările pentru datele reale
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const mockTasks: Task[] = [
-    {
-      id: 'task-1',
-      title: 'Configurare bază de date MySQL și MongoDB pentru GoalTrack',
-      status: 'COMPLETED',
-      deadline: '2026-07-15T12:00:00',
-      creationDate: '2026-07-01T09:00:00',
-      projectId: 'proj-1', 
-      userId: 'user-1'
-    },
-    {
-      id: 'task-2',
-      title: 'Integrare API de autentificare cu token JWT în frontend',
-      status: 'IN PROGRESS',
-      deadline: '2026-07-25T16:30:00',
-      creationDate: '2026-07-05T10:15:00',
-      projectId: 'proj-1', 
-      userId: 'user-1'
-    },
-    {
-      id: 'task-3',
-      title: 'Design responsiv pentru pagina de detalii a proiectului folosind Tailwind CSS',
-      status: 'PENDING',
-      deadline: '2026-07-30T10:00:00',
-      creationDate: '2026-07-10T14:45:00',
-      userId: 'user-1', 
-    }
-  ];
+  // TODO: Aici va veni ID-ul utilizatorului logat din context/store (de ex. după autentificare)
+  // Pentru moment folosim un ID hardcodat ca să poți testa API-ul
+  const currentUserId = "1"; 
 
-  // Funcții pentru acțiuni
-  const handleCompleteTask = (id: string) => {
-    console.log(`Finalizează task-ul: ${id}`);
+  // Funcția care aduce datele de la API-urile tale
+  const fetchDashboardData = async () => {
+    setIsLoading(true);
+    try {
+      // Facem ambele request-uri în paralel pentru a încărca pagina mai repede
+      const [fetchedProjects, fetchedTasks] = await Promise.all([
+        ProjectService.getByUserId(currentUserId),
+        TaskService.getByUserId(currentUserId)
+      ]);
+      
+      setProjects(fetchedProjects);
+      setTasks(fetchedTasks);
+    } catch (error) {
+      console.error("Eroare la preluarea datelor din backend:", error);
+      // Aici poți adăuga pe viitor o notificare (toast) pentru eroare
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDeleteTask = (id: string) => {
+  // Se execută o singură dată la montarea componentei
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // --- HANDLERE PENTRU ACȚIUNI REALE ---
+
+  const handleCompleteTask = async (id: string) => {
+    try {
+      // Apelăm API-ul tău pentru a schimba statusul în backend
+      await TaskService.finishTask(id);
+      
+      // Actualizăm starea locală pentru a vedea modificarea instantaneu, fără refresh
+      setTasks(prevTasks => 
+        prevTasks.map(task => 
+          task.id === id ? { ...task, status: 'COMPLETED' } : task
+        )
+      );
+    } catch (error) {
+      console.error(`Eroare la finalizarea task-ului ${id}:`, error);
+    }
+  };
+
+  const handleDeleteTask = async (id: string) => {
     if(window.confirm('Sigur vrei să ștergi acest task?')) {
-      console.log(`Task-ul ${id} a fost șters.`);
+      try {
+        // Ștergem din baza de date
+        await TaskService.deleteTask(id);
+        
+        // Ștergem din interfață
+        setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+      } catch (error) {
+        console.error(`Eroare la ștergerea task-ului ${id}:`, error);
+      }
     }
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     if(window.confirm('Sigur vrei să ștergi acest proiect și toate task-urile din el?')) {
-      console.log(`Proiectul ${id} a fost șters.`);
+      try {
+        // Ștergem proiectul din baza de date
+        await ProjectService.deleteProject(id);
+        
+        // Actualizăm interfața: scoatem proiectul...
+        setProjects(prevProjects => prevProjects.filter(project => project.id !== id));
+        
+        // ...și scoatem automat și task-urile care aparțineau de el
+        setTasks(prevTasks => prevTasks.filter(task => task.projectId !== id));
+      } catch (error) {
+        console.error(`Eroare la ștergerea proiectului ${id}:`, error);
+      }
     }
   };
 
@@ -73,15 +99,27 @@ const Home: React.FC = () => {
         onLogout={() => console.log('Iesire')} 
       />
    
-      {/* Zona Principală care conține containerul */}
+      {/* Zona Principală */}
       <main className="flex-1 p-8 h-screen overflow-y-auto relative">
-        <ContainerContent 
-          projects={mockProjects}
-          tasks={mockTasks}
-          onCompleteTask={handleCompleteTask}
-          onDeleteTask={handleDeleteTask}
-          onDeleteProject={handleDeleteProject}
-        />
+        {isLoading ? (
+          // Un loader simplu până când răspund serverele
+          <div className="flex flex-col items-center justify-center h-full opacity-60">
+            <svg className="animate-spin h-10 w-10 text-rose-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span className="text-xl font-bold text-gray-500 dark:text-gray-400">Se încarcă datele...</span>
+          </div>
+        ) : (
+          // Containerul este randat doar după ce avem datele
+          <ContainerContent 
+            projects={projects}
+            tasks={tasks}
+            onCompleteTask={handleCompleteTask}
+            onDeleteTask={handleDeleteTask}
+            onDeleteProject={handleDeleteProject}
+          />
+        )}
       </main>
 
     </div>

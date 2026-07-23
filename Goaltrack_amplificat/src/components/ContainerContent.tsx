@@ -23,50 +23,65 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const standaloneTasks = tasks.filter(task => !task.projectId);
 
+  // Verificăm dacă nu avem niciun element de afișat
+  const isEmpty = projects.length === 0 && standaloneTasks.length === 0;
+
   return (
-    <div className="relative min-h-full">
-      <div className="max-w-5xl mx-auto pb-24">
+    <div className="relative h-full">
+      {/* Am înlocuit pb-24 cu flex și o înălțime minimă calculată */}
+      <div className="max-w-5xl mx-auto flex flex-col min-h-[calc(100vh-4rem)]">
         
         {/* CONTAINER-UL PRINCIPAL */}
-        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-gray-200 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300">
+        {/* Am adăugat flex-1 și flex flex-col pentru a forța box-ul să se întindă până jos */}
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-gray-200 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300 flex-1 flex flex-col relative z-10 mb-8">
           
-          {/* Titlul paginii mutat în interior și centrat */}
-          <header className="mb-8 border-b border-gray-100 dark:border-slate-700 pb-6 text-center">
+          <header className="mb-8 border-b border-gray-100 dark:border-slate-700 pb-6 text-center shrink-0">
             <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-300 uppercase">
               Tasks & Projects
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">Gestionează-ți activitatea curentă.</p>
           </header>
 
-          <div className="flex flex-col gap-6">
-            
-            {/* RANDĂM PROIECTELE */}
-            {projects.map((project) => {
-              const tasksForThisProject = tasks.filter(t => t.projectId === project.id);
-              return (
-                <ProjectCard 
-                  key={project.id}
-                  project={project}
-                  projectTasks={tasksForThisProject}
-                  onDeleteProject={onDeleteProject}
-                  onCompleteTask={onCompleteTask}
-                  onDeleteTask={onDeleteTask}
+          {isEmpty ? (
+            /* STAREA GOALĂ (EMPTY STATE) - Acum ocupă spațiul rămas și centrează conținutul */
+            <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center animate-fade-in">
+              <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">Nu există activitate curentă</h2>
+              <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                Momentan nu ai niciun task sau proiect activ. Folosește butonul cu <span className="font-bold text-rose-500">+</span> din colțul dreapta-jos pentru a adăuga ceva nou.
+              </p>
+            </div>
+          ) : (
+            /* ZONA CU DATE */
+            <div className="flex flex-col gap-6">
+              
+              {/* RANDĂM PROIECTELE */}
+              {projects.map((project) => {
+                const tasksForThisProject = tasks.filter(t => t.projectId === project.id);
+                return (
+                  <ProjectCard 
+                    key={project.id}
+                    project={project}
+                    projectTasks={tasksForThisProject}
+                    onDeleteProject={onDeleteProject}
+                    onCompleteTask={onCompleteTask}
+                    onDeleteTask={onDeleteTask}
+                  />
+                );
+              })}
+
+              {/* RANDĂM TASK-URILE */}
+              {standaloneTasks.map((task) => (
+                <TaskCard 
+                  key={task.id} 
+                  task={task} 
+                  userId={task.userId}
+                  onComplete={onCompleteTask} 
+                  onDelete={onDeleteTask} 
                 />
-              );
-            })}
+              ))}
 
-            {/* RANDĂM TASK-URILE */}
-            {standaloneTasks.map((task) => (
-              <TaskCard 
-                key={task.id} 
-                task={task} 
-                userId={task.userId}
-                onComplete={onCompleteTask} 
-                onDelete={onDeleteTask} 
-              />
-            ))}
-
-          </div>
+            </div>
+          )}
         </div>
 
       </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import type { Task } from "../types/Task";
-import StatusBadge from "./StatusBadge";
-import { formatCreationDate } from "../utils/formatCreationDate";
-import { formatDeadline } from "../utils/formatDeadline";
+import type { Task } from "../../types/Task";
+import StatusBadge from "../embbeded/StatusBadge";
+import { formatCreationDate } from "../../utils/formatCreationDate";
+import { formatDeadline } from "../../utils/formatDeadline";
 
 interface TaskCardProps {
   task: Task;
@@ -18,9 +18,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index, isNested, onComplete, 
    const deadlineFormatata = formatDeadline(task.deadline);
 
    return (
-    <div className={`flex justify-between items-center px-6 py-5 mb-4
-    transition-all duration-300 rounded-xl shadow-md bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5
-    ${isNested ? 'ml-8 border-l-4 border-rose-500' : ''}`}>
+    <div className="flex justify-between items-center px-6 py-5 mb-4 transition-all duration-300 rounded-xl shadow-sm bg-slate-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 hover:shadow-md hover:-translate-y-0.5">
 
         <div className="flex flex-col flex-1 pr-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 transition-colors">

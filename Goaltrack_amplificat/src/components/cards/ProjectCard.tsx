@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import type { Project } from "../types/Project";
-import type { Task } from "../types/Task"; 
+import type { Project } from "../../types/Project";
+import type { Task } from "../../types/Task"; 
 import TaskCard from "./TaskCard";
-import StatusBadge from "./StatusBadge";
-import { formatCreationDate } from "../utils/formatCreationDate";
-import { formatDeadline } from "../utils/formatDeadline";
+import StatusBadge from "../embbeded/StatusBadge";
+import ProjectDescriptionCard from "./ProjectDescriptionCard";
+import { formatCreationDate } from "../../utils/formatCreationDate";
+import { formatDeadline } from "../../utils/formatDeadline";
 
 interface ProjectCardProps {
   project: Project;
@@ -31,16 +32,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             
             {/* 1. ANTETUL PROIECTULUI (Folder) */}
             <div className={`flex justify-between items-center px-6 py-5 
-                transition-all duration-300 shadow-md border relative z-10
+                transition-all duration-300 shadow-sm border relative z-10
                 ${isExpanded 
-                    ? 'bg-yellow-100 dark:bg-slate-700 border-yellow-300 dark:border-slate-600 rounded-t-xl rounded-b-none'
-                    : 'bg-yellow-50 dark:bg-slate-800 border-yellow-200 dark:border-slate-700 rounded-xl hover:shadow-lg hover:-translate-y-0.5'
+                    ? 'bg-amber-100 dark:bg-indigo-900/30 border-amber-300 dark:border-indigo-700/50 rounded-t-xl rounded-b-none'
+                    : 'bg-amber-50 dark:bg-indigo-900/10 border-amber-200 dark:border-indigo-800/50 rounded-xl hover:shadow-md hover:-translate-y-0.5'
                 }
             `}>
                 
                 <div className="flex flex-col flex-1 pr-6">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2 transition-colors">
-                        <span className="text-2xl">{isExpanded ? '📂' : '📁'}</span> 
                         {project.title || project.name} 
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-3 transition-colors">Creat la: {dataFormatata}</p>
@@ -56,7 +56,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                     <StatusBadge status={project.status} />
                 </div>
 
-                <div className="flex items-center gap-3 ml-4 border-l border-yellow-300 dark:border-slate-500 pl-6 transition-colors">
+                <div className="flex items-center gap-3 ml-4 border-l border-amber-300 dark:border-indigo-700/50 pl-6 transition-colors">
                     <button 
                         onClick={() => onDeleteProject && onDeleteProject(project.id)}
                         className="px-4 py-2 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white text-sm font-bold rounded-lg transition-colors duration-200 shadow-sm focus:ring-2 focus:ring-rose-400 focus:outline-none"
@@ -67,7 +67,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-2 bg-yellow-200 dark:bg-slate-600 text-yellow-800 dark:text-gray-200 hover:bg-yellow-400 dark:hover:bg-slate-500 hover:text-white rounded-lg transition-colors duration-200 shadow-sm focus:ring-2 focus:ring-yellow-500 dark:focus:ring-slate-400 focus:outline-none"
+                        className="p-2 bg-amber-200 dark:bg-indigo-800/50 text-amber-800 dark:text-indigo-200 hover:bg-amber-400 dark:hover:bg-indigo-700 hover:text-white rounded-lg transition-colors duration-200 shadow-sm focus:ring-2 focus:ring-amber-500 dark:focus:ring-indigo-400 focus:outline-none"
                         title={isExpanded ? "Închide proiectul" : "Vezi task-urile"}
                     >
                         <svg 
@@ -81,14 +81,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
             </div>
 
-            {/* 2. ZONA EXTINSĂ (Animație Smooth cu CSS Grid) */}
+            {/* 2. ZONA EXTINSĂ (Task-urile din interior) */}
             <div 
                 className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
                     isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                 }`}
             >
                 <div className="overflow-hidden">
-                    <div className="bg-gray-50 dark:bg-slate-900/50 border border-t-0 border-gray-200 dark:border-slate-700 rounded-b-xl p-6 shadow-inner transition-colors">
+                    <div className="bg-gray-100 dark:bg-slate-900/40 border border-t-0 border-gray-200 dark:border-slate-700 rounded-b-xl p-6 shadow-inner transition-colors">
+                        
+                        {/* AICI AM ADĂUGAT CARDUL PENTRU DESCRIERE */}
+                        <ProjectDescriptionCard description={project.description} />
+
+                        {/* Rămâne lista de task-uri */}
                         {projectTasks && projectTasks.length > 0 ? (
                             projectTasks.map((task, index) => (
                                 <TaskCard 

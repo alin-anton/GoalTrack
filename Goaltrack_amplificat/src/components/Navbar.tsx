@@ -8,17 +8,25 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, onLogout }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // Inițializăm starea verificând dacă HTML-ul are deja clasa (pentru a evita desincronizarea)
+  // 1. Inițializăm starea citind din memoria browserului (localStorage)
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return document.documentElement.classList.contains('dark');
+    const savedTheme = localStorage.getItem('theme');
+    // Dacă utilizatorul a mai apăsat butonul în trecut, folosim preferința lui
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    // Dacă e prima dată când intră pe site, folosim tema din Windows/macOS
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  // Forțăm React să adauge/șteargă clasa "dark" de pe <html> oricând se schimbă starea butonului
+  // 2. Aplicăm clasa 'dark' pe <html> și salvăm noua preferință în memorie
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
 

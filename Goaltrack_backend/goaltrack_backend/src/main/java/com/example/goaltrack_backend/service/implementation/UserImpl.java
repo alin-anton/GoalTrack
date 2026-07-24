@@ -29,7 +29,7 @@ public class UserImpl implements UserService {
 
     @Override
     public UserDtoResponse getUserById(String idUser){
-        UserModel userModel = userRepository.getUserModelById(idUser);
+        UserModel userModel = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(userModel);
     }
 

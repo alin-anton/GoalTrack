@@ -7,7 +7,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   login: (token: string, userData: User) => void;
-  updateUser: (userData: User) => void; // <--- Am adăugat funcția de update
+  updateUser: (userData: User) => void;
   logout: () => void;
 }
 
@@ -30,7 +30,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  // Funcție dedicată pentru a actualiza doar datele userului păstrând token-ul activ
   const updateUser = (userData: User) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));

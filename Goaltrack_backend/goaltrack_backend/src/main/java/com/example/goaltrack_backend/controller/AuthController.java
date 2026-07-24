@@ -75,7 +75,7 @@ public class AuthController {
         userModel.setDueProjects(0L);
 
         userRepository.save(userModel);
-        
+
         return ResponseEntity.ok("Cont creat cu succes!");
     }
 

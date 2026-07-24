@@ -5,6 +5,7 @@ import type { Task } from '../types/Task';
 import type { Project } from '../types/Project';
 import { ProjectService } from '../services/ProjectService'; // Asigură-te că folderul se numește 'services'
 import { TaskService } from '../services/TaskService';
+import { useAuth } from '../context/AuthContext'; // 1. Importăm contextul de autentificare
 
 const Home: React.FC = () => {
   // Stările pentru datele reale
@@ -12,18 +13,20 @@ const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // TODO: Aici va veni ID-ul utilizatorului logat din context/store (de ex. după autentificare)
-  // Pentru moment folosim un ID hardcodat ca să poți testa API-ul
-  const currentUserId = "1"; 
+  // 2. Extragem utilizatorul curent din memoria aplicației
+  const { user } = useAuth();
 
   // Funcția care aduce datele de la API-urile tale
   const fetchDashboardData = async () => {
+    // 3. Dacă nu avem user încă (se încarcă) sau nu are id valid, nu facem request-ul
+    if (!user || !user.id) return; 
+
     setIsLoading(true);
     try {
       // Facem ambele request-uri în paralel pentru a încărca pagina mai repede
       const [fetchedProjects, fetchedTasks] = await Promise.all([
-        ProjectService.getByUserId(currentUserId),
-        TaskService.getByUserId(currentUserId)
+        ProjectService.getByUserId(user.id),
+        TaskService.getByUserId(user.id)
       ]);
       
       setProjects(fetchedProjects);
@@ -36,10 +39,10 @@ const Home: React.FC = () => {
     }
   };
 
-  // Se execută o singură dată la montarea componentei
+  // 4. Se execută când componenta se montează sau când se schimbă utilizatorul logat
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [user]);
 
   // --- HANDLERE PENTRU ACȚIUNI REALE ---
 

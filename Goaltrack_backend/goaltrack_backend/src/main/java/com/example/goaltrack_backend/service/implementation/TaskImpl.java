@@ -57,13 +57,16 @@ public class TaskImpl implements TaskService {
         TaskModel taskModel = taskRepository.findById(idTask).get();
         taskModel.setStatus("COMPLETED");
         taskRepository.save(taskModel);
-        projectService.completeProject(taskModel.getProjectID());
+
+        // Verificăm să nu fie null sau gol înainte să apelăm serviciul de proiect
+        if (taskModel.getProjectID() != null && !taskModel.getProjectID().isEmpty()) {
+            projectService.completeProject(taskModel.getProjectID());
+        }
 
         UserModel user = userRepository.findById(taskModel.getUserID()).get();
         Long comp = user.getFinishedTasks() + 1L;
         user.setFinishedTasks(comp);
         userRepository.save(user);
-
     }
 
     @Override
@@ -81,7 +84,7 @@ public class TaskImpl implements TaskService {
             task.setStatus("DUE");
             UserModel user = userRepository.findById(task.getUserID()).get();
             Long comp = user.getDueTasks() + 1L;
-            user.setDueProjects(comp);
+            user.setDueTasks(comp); // <--- Corectat de la dueProjects la dueTasks
             userRepository.save(user);
         }
 

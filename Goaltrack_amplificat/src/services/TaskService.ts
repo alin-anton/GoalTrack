@@ -18,33 +18,27 @@ export const TaskService = {
         return response.data;
     },
 
-    createTask: async (title:string, deadline: string,
-         userId: string, projectId?: string): Promise<Task> => {
+    createTask: async (title: string, deadline: string, userId: string, projectId?: string): Promise<Task> => {
+        const params: any = {
+            title: title,
+            deadline: deadline,
+            userID: userId // Corespunde exact cu @RequestParam String userID din TaskController
+        };
 
-            const requestBody: any = {
-                title,
-                deadline,
-                userId
-            };
+        if (projectId) {
+            params.projectID = projectId; // Corespunde cu @RequestParam String projectID
+        }
 
-            if(projectId) {
-                requestBody.projectId = projectId;
-            }
-
-            const response = await api.post<Task>('/tasks', null, 
-                {params: requestBody}
-            );
-
-            return response.data;
+        const response = await api.post<Task>('/tasks', null, { params });
+        return response.data;
     },
 
     finishTask: async (taskId: string): Promise<Task> => {
-        const response = await api.put<Task>(`/tasks/${taskId}/finish`);
+        const response = await api.patch<Task>(`/tasks/${taskId}`);
         return response.data;
     },
 
     deleteTask: async (taskId: string): Promise<void> => {
         await api.delete(`/tasks/${taskId}`);
     }
-
-}
+};

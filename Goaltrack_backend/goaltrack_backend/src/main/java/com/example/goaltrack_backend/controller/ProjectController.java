@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -25,9 +24,9 @@ public class ProjectController {
                                                             @RequestParam @DateTimeFormat
                                                                     (iso = DateTimeFormat.ISO.DATE_TIME)
                                                                 LocalDateTime deadline,
-                                                            @RequestParam String userID){
+                                                            @RequestParam String userId){
 
-        ProjectDtoResponse response = projectService.addProject(title,description,deadline,userID);
+        ProjectDtoResponse response = projectService.addProject(title,description,deadline,userId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

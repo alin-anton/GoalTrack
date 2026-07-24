@@ -11,6 +11,7 @@ interface ContainerContentProps {
   onCompleteTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
   onDeleteProject: (id: string) => void;
+  onRefreshData: () => void;
 }
 
 const ContainerContent: React.FC<ContainerContentProps> = ({ 
@@ -18,21 +19,21 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
   tasks, 
   onCompleteTask, 
   onDeleteTask, 
-  onDeleteProject 
+  onDeleteProject,
+  onRefreshData 
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const standaloneTasks = tasks.filter(task => !task.projectId);
+  
+  // Filtrăm task-urile independente, care nu sunt asociate cu niciun proiect
+  const standaloneTasks = tasks.filter(task => !task.projectID);
 
   // Verificăm dacă nu avem niciun element de afișat
   const isEmpty = projects.length === 0 && standaloneTasks.length === 0;
 
   return (
     <div className="relative h-full">
-      {/* Am înlocuit pb-24 cu flex și o înălțime minimă calculată */}
       <div className="max-w-5xl mx-auto flex flex-col min-h-[calc(100vh-4rem)]">
         
-        {/* CONTAINER-UL PRINCIPAL */}
-        {/* Am adăugat flex-1 și flex flex-col pentru a forța box-ul să se întindă până jos */}
         <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-gray-200 dark:border-slate-700 p-6 md:p-8 transition-colors duration-300 flex-1 flex flex-col relative z-10 mb-8">
           
           <header className="mb-8 border-b border-gray-100 dark:border-slate-700 pb-6 text-center shrink-0">
@@ -43,7 +44,6 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
           </header>
 
           {isEmpty ? (
-            /* STAREA GOALĂ (EMPTY STATE) - Acum ocupă spațiul rămas și centrează conținutul */
             <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center animate-fade-in">
               <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">Nu există activitate curentă</h2>
               <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
@@ -51,12 +51,11 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
               </p>
             </div>
           ) : (
-            /* ZONA CU DATE */
             <div className="flex flex-col gap-6">
               
               {/* RANDĂM PROIECTELE */}
               {projects.map((project) => {
-                const tasksForThisProject = tasks.filter(t => t.projectId === project.id);
+                const tasksForThisProject = tasks.filter(t => t.projectID === project.id);
                 return (
                   <ProjectCard 
                     key={project.id}
@@ -86,7 +85,6 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
 
       </div>
 
-      {/* Floating Action Button (FAB) */}
       <button
         onClick={() => setIsModalOpen(true)}
         className="fixed bottom-10 right-10 w-16 h-16 bg-rose-600 hover:bg-rose-500 text-white rounded-full shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center z-40 focus:outline-none focus:ring-4 focus:ring-rose-300 dark:focus:ring-rose-800/50"
@@ -100,6 +98,8 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
       <ModalFormular 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
+        projects={projects}
+        onSuccess={onRefreshData}
       />
     </div>
   );

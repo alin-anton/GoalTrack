@@ -55,6 +55,7 @@ public class SecurityService {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
+                .setAllowedClockSkewSeconds(300) // 5 minute toleranță
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

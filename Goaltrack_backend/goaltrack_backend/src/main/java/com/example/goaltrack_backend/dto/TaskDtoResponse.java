@@ -21,4 +21,6 @@ public class TaskDtoResponse {
     private LocalDateTime creationDate;
 
     private LocalDateTime deadline;
+
+    private String projectID;
 }

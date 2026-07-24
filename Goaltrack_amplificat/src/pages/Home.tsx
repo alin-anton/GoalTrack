@@ -121,6 +121,7 @@ const Home: React.FC = () => {
             onCompleteTask={handleCompleteTask}
             onDeleteTask={handleDeleteTask}
             onDeleteProject={handleDeleteProject}
+            onRefreshData={fetchDashboardData} // <--- ADAUGĂ ACEASTĂ LINIE
           />
         )}
       </main>

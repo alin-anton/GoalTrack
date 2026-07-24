@@ -8,40 +8,33 @@ export const ProjectService = {
         return response.data;
     },
 
-getByUserId: async (userId: string): Promise<Project[]> => {
+    getByUserId: async (userId: string): Promise<Project[]> => {
         const response = await api.get(`/projects/user/${userId}`);
         return response.data;
     },
 
-    createProject: async (title: string, description: string,
-        deadline:string,userId:string): Promise<Project> => {
+    createProject: async (title: string, description: string, deadline: string, userId: string): Promise<Project> => {
+        const response = await api.post<Project>('/projects', null, {
+            params: {
+                title: title,
+                description: description,
+                deadline: deadline,
+                userId: userId // Corespunde cu @RequestParam String userId din ProjectController
+            }
+        });
+        return response.data;
+    },
 
-            const response = await api.post<Project>('/projects', null ,{
-                params: {
-                    title: title,
-                    description: description,
-                    deadline: deadline,
-                    userId: userId
-                }
-            });
+    deleteProject: async (id: string): Promise<void> => {
+        await api.delete(`/projects/${id}`);
+    },
 
-            return response.data;
-        },
-
-        deleteProject: async (id: string): Promise<void> => {
-            await api.delete(`/projects/${id}`);
-        },
-
-        updateProject: async (id: string, title: string, description: string, deadline: string): Promise<Project> => {
-            const response = await api.put<Project>(`/projects/${id}`, null, {
-                params: {
-                    title: title,
-                    description: description,
-                    deadline: deadline
-                }
-            });
-
-            return response.data;
-        }
-
-}
+    updateProject: async (id: string, title: string, description: string, deadline: string): Promise<Project> => {
+        const response = await api.put<Project>(`/projects/${id}`, {
+            title: title,
+            description: description,
+            deadline: deadline
+        });
+        return response.data;
+    }
+};

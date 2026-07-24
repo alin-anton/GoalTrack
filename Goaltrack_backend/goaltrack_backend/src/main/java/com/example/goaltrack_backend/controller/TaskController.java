@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TaskController {
     private final TaskService taskService;
 
@@ -23,7 +22,7 @@ public class TaskController {
     public ResponseEntity<TaskDtoResponse> addTask(@RequestParam String title,
                                                    @RequestParam LocalDateTime deadline,
                                                    @RequestParam String userID,
-                                                   @RequestParam(required = false) String projectID){
+                                                   @RequestParam(required = false, name = "projectID") String projectID){
         TaskDtoResponse taskDtoResponse = taskService.addTask(title, deadline, userID, projectID);
         return new ResponseEntity<>(taskDtoResponse, HttpStatus.CREATED);
     }

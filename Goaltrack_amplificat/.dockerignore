@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Node / package manager
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# Build / cache output
+build
+coverage
+.cache
+.parcel-cache
+.next
+out
+dist
+
+# Logs
+logs
+*.log
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# Test files
+__tests__
+*.test.js
+*.spec.js
+
+# Docker
+Dockerfile*
+docker-compose*.yml

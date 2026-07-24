@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { UserService } from '../services/UserService';
 import { useAuth } from '../context/AuthContext';

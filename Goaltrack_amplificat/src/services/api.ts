@@ -2,10 +2,10 @@ import axios from 'axios';
 
 // Aici pui URL-ul de bază al serverului tău Spring Boot
 // Modifică portul sau ruta dacă backend-ul tău rulează altfel (ex: http://localhost:8080/api/v1)
-const API_BASE_URL = 'http://localhost:8080/api'; 
+
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },

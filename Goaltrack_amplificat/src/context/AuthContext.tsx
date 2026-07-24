@@ -7,13 +7,13 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   login: (token: string, userData: User) => void;
+  updateUser: (userData: User) => void; // <--- Am adăugat funcția de update
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Citim direct din localStorage la pornire/refresh pentru a evita flicker-ul și redirecționarea greșită
   const [user, setUser] = useState<User | null>(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
@@ -30,6 +30,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
+  // Funcție dedicată pentru a actualiza doar datele userului păstrând token-ul activ
+  const updateUser = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -41,7 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated, login, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

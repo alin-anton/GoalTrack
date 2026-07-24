@@ -86,7 +86,7 @@ const Home: React.FC = () => {
         setProjects(prevProjects => prevProjects.filter(project => project.id !== id));
         
         // ...și scoatem automat și task-urile care aparțineau de el
-        setTasks(prevTasks => prevTasks.filter(task => task.projectId !== id));
+        setTasks(prevTasks => prevTasks.filter(task => task.projectID !== id));
       } catch (error) {
         console.error(`Eroare la ștergerea proiectului ${id}:`, error);
       }
@@ -97,10 +97,7 @@ const Home: React.FC = () => {
     <div className="flex h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 font-sans overflow-hidden">
       
       {/* Meniul Lateral */}
-      <Navbar 
-        onNavigate={(path) => console.log('Navigat catre', path)} 
-        onLogout={() => console.log('Iesire')} 
-      />
+      <Navbar />
    
       {/* Zona Principală */}
       <main className="flex-1 p-8 h-screen overflow-y-auto relative">

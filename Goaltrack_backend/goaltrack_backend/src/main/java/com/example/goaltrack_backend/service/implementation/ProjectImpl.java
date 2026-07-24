@@ -69,6 +69,12 @@ public class ProjectImpl implements ProjectService {
         if(!projectRepository.existsById(id)){
             return;
         }
+
+        List<TaskModel> tasksForProj = taskRepository.getTaskModelsByProjectID(id);
+        for(TaskModel task : tasksForProj){
+            taskRepository.deleteById(task.getId());
+        }
+
         projectRepository.deleteById(id);
     }
 

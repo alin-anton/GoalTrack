@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Stats from './pages/Stats'
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           {/* RUTE PROTEJATE (necesită token) */}
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />
+            <Route path="/stats" element={<Stats />} />
           </Route>
 
           {/* CATCH-ALL: Redirecționează orice link greșit către home */}

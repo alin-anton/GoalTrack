@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 // Permitem originile de dezvoltare și, eventual, cele de producție ulterior
-                .allowedOriginPatterns("http://localhost:3000", "http://localhost:8080")
+                .allowedOriginPatterns("http://localhost:3000", "http://localhost:8080","http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true) // Acum este permis deoarece folosim patterns
